@@ -97,7 +97,7 @@ void backward_network_gpu(network net, network_state state)
     for(i = net.n-1; i >= 0; --i){
         state.index = i;
         layer l = net.layers[i];
-        if (l.stopbackward) break;
+        //if (l.stopbackward) break;        //mid stop
         if(i == 0){
             state.input = original_input;
             state.delta = original_delta;
@@ -132,6 +132,7 @@ void update_network_gpu(network net)
     for(i = 0; i < net.n; ++i){
         layer l = net.layers[i];
         l.t = get_current_batch(net);
+        if (l.stopbackward) continue;            //mid stop
         if(l.update_gpu){
             l.update_gpu(l, update_batch, rate, net.momentum, net.decay);
         }
